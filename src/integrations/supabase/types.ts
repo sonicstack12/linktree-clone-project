@@ -14,7 +14,207 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      click_events: {
+        Row: {
+          created_at: string
+          id: string
+          link_id: string
+          profile_id: string
+          referrer: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          link_id: string
+          profile_id: string
+          referrer?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          link_id?: string
+          profile_id?: string
+          referrer?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "click_events_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "links"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "click_events_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      links: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          icon: string | null
+          id: string
+          position: number
+          profile_id: string
+          title: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          icon?: string | null
+          id?: string
+          position?: number
+          profile_id: string
+          title: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          icon?: string | null
+          id?: string
+          position?: number
+          profile_id?: string
+          title?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "links_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      page_views: {
+        Row: {
+          created_at: string
+          id: string
+          profile_id: string
+          referrer: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          profile_id: string
+          referrer?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          profile_id?: string
+          referrer?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_views_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          background_color: string | null
+          bio: string | null
+          button_color: string | null
+          button_style: string
+          button_text_color: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          text_color: string | null
+          theme: string
+          updated_at: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          background_color?: string | null
+          bio?: string | null
+          button_color?: string | null
+          button_style?: string
+          button_text_color?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          text_color?: string | null
+          theme?: string
+          updated_at?: string
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          background_color?: string | null
+          bio?: string | null
+          button_color?: string | null
+          button_style?: string
+          button_text_color?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          text_color?: string | null
+          theme?: string
+          updated_at?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      social_links: {
+        Row: {
+          created_at: string
+          id: string
+          platform: string
+          position: number
+          profile_id: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          platform: string
+          position?: number
+          profile_id: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          platform?: string
+          position?: number
+          profile_id?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_links_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
