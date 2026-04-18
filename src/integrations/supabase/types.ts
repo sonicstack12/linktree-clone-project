@@ -56,37 +56,70 @@ export type Database = {
           },
         ]
       }
+      email_subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          profile_id: string
+          source_link_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          profile_id: string
+          source_link_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          profile_id?: string
+          source_link_id?: string | null
+        }
+        Relationships: []
+      }
       links: {
         Row: {
           created_at: string
           enabled: boolean
+          end_at: string | null
           icon: string | null
           id: string
           position: number
           profile_id: string
+          start_at: string | null
           title: string
+          type: string
           updated_at: string
           url: string
         }
         Insert: {
           created_at?: string
           enabled?: boolean
+          end_at?: string | null
           icon?: string | null
           id?: string
           position?: number
           profile_id: string
+          start_at?: string | null
           title: string
+          type?: string
           updated_at?: string
           url: string
         }
         Update: {
           created_at?: string
           enabled?: boolean
+          end_at?: string | null
           icon?: string | null
           id?: string
           position?: number
           profile_id?: string
+          start_at?: string | null
           title?: string
+          type?: string
           updated_at?: string
           url?: string
         }
@@ -146,6 +179,7 @@ export type Database = {
           text_color: string | null
           theme: string
           updated_at: string
+          use_custom_colors: boolean
           username: string
         }
         Insert: {
@@ -161,6 +195,7 @@ export type Database = {
           text_color?: string | null
           theme?: string
           updated_at?: string
+          use_custom_colors?: boolean
           username: string
         }
         Update: {
@@ -176,6 +211,7 @@ export type Database = {
           text_color?: string | null
           theme?: string
           updated_at?: string
+          use_custom_colors?: boolean
           username?: string
         }
         Relationships: []
