@@ -18,6 +18,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
+import { Route as AdminSubscribersRouteImport } from './routes/admin.subscribers'
 import { Route as AdminPreviewRouteImport } from './routes/admin.preview'
 import { Route as AdminAppearanceRouteImport } from './routes/admin.appearance'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
@@ -67,6 +68,11 @@ const UUsernameRoute = UUsernameRouteImport.update({
   path: '/u/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSubscribersRoute = AdminSubscribersRouteImport.update({
+  id: '/subscribers',
+  path: '/subscribers',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPreviewRoute = AdminPreviewRouteImport.update({
   id: '/preview',
   path: '/preview',
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/appearance': typeof AdminAppearanceRoute
   '/admin/preview': typeof AdminPreviewRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
   '/u/$username': typeof UUsernameRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -107,6 +114,7 @@ export interface FileRoutesByTo {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/appearance': typeof AdminAppearanceRoute
   '/admin/preview': typeof AdminPreviewRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
   '/u/$username': typeof UUsernameRoute
   '/admin': typeof AdminIndexRoute
 }
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/appearance': typeof AdminAppearanceRoute
   '/admin/preview': typeof AdminPreviewRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
   '/u/$username': typeof UUsernameRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -138,6 +147,7 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/appearance'
     | '/admin/preview'
+    | '/admin/subscribers'
     | '/u/$username'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -151,6 +161,7 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/appearance'
     | '/admin/preview'
+    | '/admin/subscribers'
     | '/u/$username'
     | '/admin'
   id:
@@ -165,6 +176,7 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/appearance'
     | '/admin/preview'
+    | '/admin/subscribers'
     | '/u/$username'
     | '/admin/'
   fileRoutesById: FileRoutesById
@@ -245,6 +257,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/subscribers': {
+      id: '/admin/subscribers'
+      path: '/subscribers'
+      fullPath: '/admin/subscribers'
+      preLoaderRoute: typeof AdminSubscribersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/preview': {
       id: '/admin/preview'
       path: '/preview'
@@ -273,6 +292,7 @@ interface AdminRouteChildren {
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminAppearanceRoute: typeof AdminAppearanceRoute
   AdminPreviewRoute: typeof AdminPreviewRoute
+  AdminSubscribersRoute: typeof AdminSubscribersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -280,6 +300,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminAppearanceRoute: AdminAppearanceRoute,
   AdminPreviewRoute: AdminPreviewRoute,
+  AdminSubscribersRoute: AdminSubscribersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 

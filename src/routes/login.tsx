@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { GoogleButton } from "@/components/GoogleButton";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
@@ -39,6 +40,12 @@ function LoginPage() {
         <div>
           <h1 className="text-3xl font-bold">Welcome back</h1>
           <p className="mt-2 text-sm text-muted-foreground">Log in to your linkly.</p>
+        </div>
+        <div className="space-y-3">
+          <GoogleButton />
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <div className="h-px flex-1 bg-border" /> or <div className="h-px flex-1 bg-border" />
+          </div>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
