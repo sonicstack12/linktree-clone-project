@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { THEMES, BUTTON_STYLES, type ThemeId, type ButtonStyleId } from "@/lib/themes";
+import { BUTTON_STYLES, resolveTheme, type ButtonStyleId } from "@/lib/themes";
 import { getSocial } from "@/lib/socials";
+import { toast } from "sonner";
 
 interface ProfileData {
   id: string;
@@ -11,8 +12,22 @@ interface ProfileData {
   avatar_url: string | null;
   theme: string;
   button_style: string;
+  use_custom_colors?: boolean | null;
+  background_color?: string | null;
+  text_color?: string | null;
+  button_color?: string | null;
+  button_text_color?: string | null;
 }
-interface LinkData { id: string; title: string; url: string; enabled: boolean; position: number }
+interface LinkData {
+  id: string;
+  title: string;
+  url: string;
+  enabled: boolean;
+  position: number;
+  type?: string;
+  start_at?: string | null;
+  end_at?: string | null;
+}
 interface SocialData { id: string; platform: string; url: string; position: number }
 
 export function ProfilePreview({ profileId }: { profileId: string }) {
@@ -32,7 +47,6 @@ export function ProfilePreview({ profileId }: { profileId: string }) {
       setSocials((s.data as SocialData[]) ?? []);
     };
     load();
-    // Re-poll every 1.5s while preview is mounted (cheap, since it's the dashboard)
     const interval = setInterval(load, 1500);
     return () => clearInterval(interval);
   }, [profileId]);
@@ -60,6 +74,13 @@ export function PhoneFrame({ children }: { children: React.ReactNode }) {
   );
 }
 
+function isLinkLive(l: LinkData): boolean {
+  const now = Date.now();
+  if (l.start_at && new Date(l.start_at).getTime() > now) return false;
+  if (l.end_at && new Date(l.end_at).getTime() < now) return false;
+  return true;
+}
+
 export function PublicProfileBody({
   profile,
   links,
@@ -71,8 +92,9 @@ export function PublicProfileBody({
   socials: SocialData[];
   onLinkClick?: (linkId: string, url: string) => void;
 }) {
-  const theme = THEMES[(profile.theme as ThemeId)] ?? THEMES.leaf;
+  const theme = resolveTheme(profile);
   const buttonStyle = BUTTON_STYLES.find((b) => b.id === (profile.button_style as ButtonStyleId)) ?? BUTTON_STYLES[0];
+  const visibleLinks = links.filter(isLinkLive);
 
   return (
     <div className="min-h-full px-5 pt-12 pb-8" style={{ background: theme.background, color: theme.text }}>
@@ -113,30 +135,129 @@ export function PublicProfileBody({
           </div>
         )}
 
-        {/* Links */}
+        {/* Blocks */}
         <div className="mt-6 flex w-full flex-col gap-3">
-          {links.length === 0 && <div className="text-xs opacity-60">No links yet</div>}
-          {links.map((link) => (
-            <a
-              key={link.id}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => onLinkClick?.(link.id, link.url)}
-              className={`block w-full px-5 py-3 text-sm font-semibold transition-pop hover:scale-[1.02] hover:shadow-pop ${buttonStyle.className}`}
-              style={{
-                background: buttonStyle.id === "outline" ? "transparent" : theme.button,
-                color: buttonStyle.id === "outline" ? theme.text : theme.buttonText,
-                borderColor: buttonStyle.id === "outline" ? theme.button : undefined,
-              }}
-            >
-              {link.title}
-            </a>
-          ))}
+          {visibleLinks.length === 0 && <div className="text-xs opacity-60">No links yet</div>}
+          {visibleLinks.map((link) => {
+            if (link.type === "header") {
+              return (
+                <div key={link.id} className="pt-2 pb-1 text-xs font-bold uppercase tracking-wider opacity-70">
+                  {link.title}
+                </div>
+              );
+            }
+            if (link.type === "email") {
+              return (
+                <EmailCollector
+                  key={link.id}
+                  link={link}
+                  profileId={profile.id}
+                  buttonClass={buttonStyle.className}
+                  buttonStyleId={buttonStyle.id}
+                  theme={theme}
+                />
+              );
+            }
+            return (
+              <a
+                key={link.id}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => onLinkClick?.(link.id, link.url)}
+                className={`block w-full px-5 py-3 text-sm font-semibold transition-pop hover:scale-[1.02] hover:shadow-pop ${buttonStyle.className}`}
+                style={{
+                  background: buttonStyle.id === "outline" ? "transparent" : theme.button,
+                  color: buttonStyle.id === "outline" ? theme.text : theme.buttonText,
+                  borderColor: buttonStyle.id === "outline" ? theme.button : undefined,
+                }}
+              >
+                {link.title}
+              </a>
+            );
+          })}
         </div>
 
         <div className="mt-10 text-[10px] opacity-50">linkly.app</div>
       </div>
     </div>
+  );
+}
+
+function EmailCollector({
+  link,
+  profileId,
+  buttonClass,
+  buttonStyleId,
+  theme,
+}: {
+  link: LinkData;
+  profileId: string;
+  buttonClass: string;
+  buttonStyleId: string;
+  theme: { button: string; buttonText: string; text: string };
+}) {
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      toast.error("Enter a valid email");
+      return;
+    }
+    setSubmitting(true);
+    const { error } = await supabase.from("email_subscribers").insert({
+      profile_id: profileId,
+      email: email.toLowerCase(),
+      source_link_id: link.id,
+    });
+    setSubmitting(false);
+    if (error && !error.message.includes("duplicate")) {
+      toast.error(error.message);
+      return;
+    }
+    setDone(true);
+  };
+
+  if (done) {
+    return (
+      <div className={`w-full px-5 py-3 text-sm font-semibold ${buttonClass}`} style={{ background: theme.button, color: theme.buttonText }}>
+        Thanks for subscribing! 🎉
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={submit} className="flex w-full flex-col gap-2">
+      {link.title && <div className="text-xs font-semibold opacity-80">{link.title}</div>}
+      <div className="flex w-full gap-2">
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="your@email.com"
+          className={`flex-1 px-3 py-3 text-sm outline-none ring-2 ring-transparent focus:ring-current ${buttonClass}`}
+          style={{
+            background: "rgba(255,255,255,0.7)",
+            color: "oklch(0.20 0.02 240)",
+          }}
+        />
+        <button
+          type="submit"
+          disabled={submitting}
+          className={`px-4 py-3 text-sm font-semibold transition-pop hover:scale-[1.02] ${buttonClass}`}
+          style={{
+            background: buttonStyleId === "outline" ? "transparent" : theme.button,
+            color: buttonStyleId === "outline" ? theme.text : theme.buttonText,
+            borderColor: buttonStyleId === "outline" ? theme.button : undefined,
+          }}
+        >
+          {submitting ? "..." : "Join"}
+        </button>
+      </div>
+    </form>
   );
 }

@@ -101,3 +101,36 @@ export const TEMPLATES: Template[] = [
   { id: "darkmode", name: "After Dark", description: "Sleek dark aesthetic", theme: "night", buttonStyle: "outline" },
   { id: "berry", name: "Berry", description: "Playful & feminine vibes", theme: "rose", buttonStyle: "rounded" },
 ];
+
+/**
+ * Resolves the effective colors for a profile.
+ * If `use_custom_colors` is on, custom hex values override the preset.
+ */
+export interface ResolvedTheme {
+  background: string;
+  text: string;
+  button: string;
+  buttonText: string;
+  accent: string;
+}
+
+export interface ProfileThemeFields {
+  theme: string;
+  use_custom_colors?: boolean | null;
+  background_color?: string | null;
+  text_color?: string | null;
+  button_color?: string | null;
+  button_text_color?: string | null;
+}
+
+export function resolveTheme(p: ProfileThemeFields): ResolvedTheme {
+  const preset = THEMES[(p.theme as ThemeId)] ?? THEMES.leaf;
+  if (!p.use_custom_colors) return preset;
+  return {
+    background: p.background_color || preset.background,
+    text: p.text_color || preset.text,
+    button: p.button_color || preset.button,
+    buttonText: p.button_text_color || preset.buttonText,
+    accent: preset.accent,
+  };
+}

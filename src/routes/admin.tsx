@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { LayoutDashboard, Palette, BarChart3, Eye, LogOut } from "lucide-react";
+import { LayoutDashboard, Palette, BarChart3, Eye, LogOut, Mail } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
@@ -12,6 +12,7 @@ export const Route = createFileRoute("/admin")({
 const NAV = [
   { to: "/admin", label: "Links", icon: LayoutDashboard, exact: true },
   { to: "/admin/appearance", label: "Appearance", icon: Palette, exact: false },
+  { to: "/admin/subscribers", label: "Subscribers", icon: Mail, exact: false },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3, exact: false },
 ];
 

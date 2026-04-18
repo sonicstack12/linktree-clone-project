@@ -12,8 +12,16 @@ export const Route = createFileRoute("/u/$username")({
       .ilike("username", params.username)
       .maybeSingle();
     if (!profile) return { profile: null, links: [], socials: [] };
+    const nowIso = new Date().toISOString();
     const [l, s] = await Promise.all([
-      supabase.from("links").select("*").eq("profile_id", profile.id).eq("enabled", true).order("position"),
+      supabase
+        .from("links")
+        .select("*")
+        .eq("profile_id", profile.id)
+        .eq("enabled", true)
+        .or(`start_at.is.null,start_at.lte.${nowIso}`)
+        .or(`end_at.is.null,end_at.gte.${nowIso}`)
+        .order("position"),
       supabase.from("social_links").select("*").eq("profile_id", profile.id).order("position"),
     ]);
     return { profile, links: l.data ?? [], socials: s.data ?? [] };

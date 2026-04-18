@@ -4,8 +4,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { THEMES, BUTTON_STYLES, TEMPLATES, type ThemeId, type ButtonStyleId } from "@/lib/themes";
 import { ProfilePreview } from "@/components/ProfilePreview";
+import { ColorPicker } from "@/components/ColorPicker";
 import { Check } from "lucide-react";
 import { toast } from "sonner";
 
@@ -18,7 +21,19 @@ interface ProfileRow {
   theme: string;
   button_style: string;
   username: string;
+  use_custom_colors: boolean;
+  background_color: string | null;
+  text_color: string | null;
+  button_color: string | null;
+  button_text_color: string | null;
 }
+
+const DEFAULT_CUSTOM = {
+  background_color: "#f0fdf4",
+  text_color: "#14532d",
+  button_color: "#16a34a",
+  button_text_color: "#ffffff",
+};
 
 function AppearancePage() {
   const { user } = useAuth();
@@ -26,7 +41,7 @@ function AppearancePage() {
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("profiles").select("id, theme, button_style, username").eq("id", user.id).single()
+    supabase.from("profiles").select("*").eq("id", user.id).single()
       .then(({ data }) => { if (data) setProfile(data as ProfileRow); });
   }, [user]);
 
@@ -38,8 +53,16 @@ function AppearancePage() {
   };
 
   const applyTemplate = async (theme: ThemeId, buttonStyle: ButtonStyleId) => {
-    await updateProfile({ theme, button_style: buttonStyle });
+    await updateProfile({ theme, button_style: buttonStyle, use_custom_colors: false });
     toast.success("Template applied!");
+  };
+
+  const enableCustom = async (on: boolean) => {
+    if (on && !profile?.background_color) {
+      await updateProfile({ use_custom_colors: true, ...DEFAULT_CUSTOM });
+    } else {
+      await updateProfile({ use_custom_colors: on });
+    }
   };
 
   if (!profile) return <div className="grid h-64 place-items-center text-muted-foreground">Loading…</div>;
@@ -81,11 +104,11 @@ function AppearancePage() {
           <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
             {(Object.keys(THEMES) as ThemeId[]).map((id) => {
               const theme = THEMES[id];
-              const isActive = profile.theme === id;
+              const isActive = profile.theme === id && !profile.use_custom_colors;
               return (
                 <button
                   key={id}
-                  onClick={() => updateProfile({ theme: id })}
+                  onClick={() => updateProfile({ theme: id, use_custom_colors: false })}
                   className={`relative aspect-square overflow-hidden rounded-2xl border-2 transition-pop ${isActive ? "border-primary shadow-pop scale-105" : "border-transparent hover:scale-105"}`}
                   style={{ background: theme.background }}
                 >
@@ -100,6 +123,46 @@ function AppearancePage() {
                 </button>
               );
             })}
+          </div>
+        </Card>
+
+        {/* Custom colors */}
+        <Card className="p-6 shadow-card">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold">Custom colors</h2>
+              <p className="text-xs text-muted-foreground">Override the preset with your own palette.</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Label htmlFor="custom-toggle" className="text-sm">On</Label>
+              <Switch
+                id="custom-toggle"
+                checked={profile.use_custom_colors}
+                onCheckedChange={enableCustom}
+              />
+            </div>
+          </div>
+          <div className={`grid gap-4 sm:grid-cols-2 ${!profile.use_custom_colors ? "pointer-events-none opacity-40" : ""}`}>
+            <ColorPicker
+              label="Background"
+              value={profile.background_color ?? DEFAULT_CUSTOM.background_color}
+              onChange={(v) => updateProfile({ background_color: v })}
+            />
+            <ColorPicker
+              label="Text"
+              value={profile.text_color ?? DEFAULT_CUSTOM.text_color}
+              onChange={(v) => updateProfile({ text_color: v })}
+            />
+            <ColorPicker
+              label="Button"
+              value={profile.button_color ?? DEFAULT_CUSTOM.button_color}
+              onChange={(v) => updateProfile({ button_color: v })}
+            />
+            <ColorPicker
+              label="Button text"
+              value={profile.button_text_color ?? DEFAULT_CUSTOM.button_text_color}
+              onChange={(v) => updateProfile({ button_text_color: v })}
+            />
           </div>
         </Card>
 
