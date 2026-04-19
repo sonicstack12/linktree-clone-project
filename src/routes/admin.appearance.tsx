@@ -6,7 +6,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { THEMES, BUTTON_STYLES, TEMPLATES, type ThemeId, type ButtonStyleId } from "@/lib/themes";
+import {
+  THEMES, BUTTON_STYLES, TEMPLATES, FONT_FAMILIES, BUTTON_EFFECTS, BACKGROUND_PATTERNS, ANIMATION_STYLES,
+  type ThemeId, type ButtonStyleId, type FontFamilyId, type ButtonEffectId,
+  type BackgroundPatternId, type AnimationStyleId,
+} from "@/lib/themes";
 import { ProfilePreview } from "@/components/ProfilePreview";
 import { ColorPicker } from "@/components/ColorPicker";
 import { Check } from "lucide-react";
@@ -26,6 +30,10 @@ interface ProfileRow {
   text_color: string | null;
   button_color: string | null;
   button_text_color: string | null;
+  font_family: string;
+  button_effect: string;
+  background_pattern: string;
+  animation_style: string;
 }
 
 const DEFAULT_CUSTOM = {
@@ -52,9 +60,17 @@ function AppearancePage() {
     if (error) toast.error(error.message);
   };
 
-  const applyTemplate = async (theme: ThemeId, buttonStyle: ButtonStyleId) => {
-    await updateProfile({ theme, button_style: buttonStyle, use_custom_colors: false });
-    toast.success("Template applied!");
+  const applyTemplate = async (t: typeof TEMPLATES[number]) => {
+    await updateProfile({
+      theme: t.theme,
+      button_style: t.buttonStyle,
+      use_custom_colors: false,
+      font_family: t.fontFamily ?? "inter",
+      button_effect: t.buttonEffect ?? "shadow",
+      background_pattern: t.backgroundPattern ?? "none",
+      animation_style: t.animationStyle ?? "fade",
+    });
+    toast.success(`${t.name} applied!`);
   };
 
   const enableCustom = async (on: boolean) => {
@@ -73,25 +89,35 @@ function AppearancePage() {
         {/* Templates */}
         <Card className="p-6 shadow-card">
           <h2 className="mb-4 text-lg font-bold">Quick templates</h2>
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {TEMPLATES.map((t) => {
               const theme = THEMES[t.theme];
+              const fontFamily = FONT_FAMILIES.find((f) => f.id === t.fontFamily)?.cssFamily;
               return (
                 <button
                   key={t.id}
-                  onClick={() => applyTemplate(t.theme, t.buttonStyle)}
+                  onClick={() => applyTemplate(t)}
                   className="group overflow-hidden rounded-xl border-2 border-transparent text-left transition-pop hover:border-primary hover:shadow-pop"
                 >
-                  <div className="aspect-[3/4] p-3" style={{ background: theme.background }}>
+                  <div className="aspect-[3/4] p-3" style={{ background: theme.background, fontFamily }}>
                     <div className="mx-auto flex h-full max-w-[110px] flex-col items-center gap-1.5">
                       <div className="h-8 w-8 rounded-full bg-white/90" />
-                      <div className="text-[9px] font-bold" style={{ color: theme.text }}>@{t.id}</div>
-                      {[0, 1, 2].map((i) => (
-                        <div key={i} className={`h-4 w-full ${t.buttonStyle === "pill" ? "rounded-full" : "rounded-md"}`} style={{ background: theme.button }} />
+                      <div className="text-[9px] font-bold" style={{ color: theme.text }}>@{t.sampleHandle ?? t.id}</div>
+                      {(t.sampleLinks ?? ["Link", "Link", "Link"]).slice(0, 3).map((label, i) => (
+                        <div
+                          key={i}
+                          className={`flex h-4 w-full items-center justify-center text-[7px] font-semibold ${t.buttonStyle === "pill" ? "rounded-full" : t.buttonStyle === "square" ? "rounded-none" : "rounded-md"}`}
+                          style={{ background: theme.button, color: theme.buttonText }}
+                        >
+                          {label}
+                        </div>
                       ))}
                     </div>
                   </div>
-                  <div className="p-2 text-center text-xs font-semibold">{t.name}</div>
+                  <div className="p-2 text-center">
+                    <div className="text-xs font-semibold">{t.name}</div>
+                    <div className="text-[10px] text-muted-foreground">{t.description}</div>
+                  </div>
                 </button>
               );
             })}
@@ -101,7 +127,7 @@ function AppearancePage() {
         {/* Themes */}
         <Card className="p-6 shadow-card">
           <h2 className="mb-4 text-lg font-bold">Theme</h2>
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-5">
             {(Object.keys(THEMES) as ThemeId[]).map((id) => {
               const theme = THEMES[id];
               const isActive = profile.theme === id && !profile.use_custom_colors;
@@ -117,7 +143,7 @@ function AppearancePage() {
                       <Check className="h-3.5 w-3.5" />
                     </div>
                   )}
-                  <div className="absolute bottom-1.5 left-1.5 right-1.5 truncate rounded-md bg-black/20 px-1.5 py-0.5 text-center text-[10px] font-semibold text-white backdrop-blur">
+                  <div className="absolute bottom-1.5 left-1.5 right-1.5 truncate rounded-md bg-black/30 px-1.5 py-0.5 text-center text-[10px] font-semibold text-white backdrop-blur">
                     {theme.name}
                   </div>
                 </button>
@@ -135,34 +161,35 @@ function AppearancePage() {
             </div>
             <div className="flex items-center gap-2">
               <Label htmlFor="custom-toggle" className="text-sm">On</Label>
-              <Switch
-                id="custom-toggle"
-                checked={profile.use_custom_colors}
-                onCheckedChange={enableCustom}
-              />
+              <Switch id="custom-toggle" checked={profile.use_custom_colors} onCheckedChange={enableCustom} />
             </div>
           </div>
           <div className={`grid gap-4 sm:grid-cols-2 ${!profile.use_custom_colors ? "pointer-events-none opacity-40" : ""}`}>
-            <ColorPicker
-              label="Background"
-              value={profile.background_color ?? DEFAULT_CUSTOM.background_color}
-              onChange={(v) => updateProfile({ background_color: v })}
-            />
-            <ColorPicker
-              label="Text"
-              value={profile.text_color ?? DEFAULT_CUSTOM.text_color}
-              onChange={(v) => updateProfile({ text_color: v })}
-            />
-            <ColorPicker
-              label="Button"
-              value={profile.button_color ?? DEFAULT_CUSTOM.button_color}
-              onChange={(v) => updateProfile({ button_color: v })}
-            />
-            <ColorPicker
-              label="Button text"
-              value={profile.button_text_color ?? DEFAULT_CUSTOM.button_text_color}
-              onChange={(v) => updateProfile({ button_text_color: v })}
-            />
+            <ColorPicker label="Background" value={profile.background_color ?? DEFAULT_CUSTOM.background_color} onChange={(v) => updateProfile({ background_color: v })} />
+            <ColorPicker label="Text" value={profile.text_color ?? DEFAULT_CUSTOM.text_color} onChange={(v) => updateProfile({ text_color: v })} />
+            <ColorPicker label="Button" value={profile.button_color ?? DEFAULT_CUSTOM.button_color} onChange={(v) => updateProfile({ button_color: v })} />
+            <ColorPicker label="Button text" value={profile.button_text_color ?? DEFAULT_CUSTOM.button_text_color} onChange={(v) => updateProfile({ button_text_color: v })} />
+          </div>
+        </Card>
+
+        {/* Font family */}
+        <Card className="p-6 shadow-card">
+          <h2 className="mb-4 text-lg font-bold">Font</h2>
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {FONT_FAMILIES.map((f) => {
+              const isActive = profile.font_family === f.id;
+              return (
+                <button
+                  key={f.id}
+                  onClick={() => updateProfile({ font_family: f.id as FontFamilyId })}
+                  className={`rounded-xl border-2 p-4 text-left transition-pop ${isActive ? "border-primary shadow-pop" : "border-border hover:border-primary/50"}`}
+                  style={{ fontFamily: f.cssFamily }}
+                >
+                  <div className="text-xs font-medium text-muted-foreground">{f.name}</div>
+                  <div className="mt-1 text-xl font-bold">Aa</div>
+                </button>
+              );
+            })}
           </div>
         </Card>
 
@@ -177,11 +204,68 @@ function AppearancePage() {
                   key={style.id}
                   variant={isActive ? "hero" : "outline"}
                   size="lg"
-                  onClick={() => updateProfile({ button_style: style.id })}
+                  onClick={() => updateProfile({ button_style: style.id as ButtonStyleId })}
                   className={style.className}
                 >
                   {style.name}
                 </Button>
+              );
+            })}
+          </div>
+        </Card>
+
+        {/* Button effect */}
+        <Card className="p-6 shadow-card">
+          <h2 className="mb-4 text-lg font-bold">Button effect</h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {BUTTON_EFFECTS.map((eff) => {
+              const isActive = profile.button_effect === eff.id;
+              return (
+                <button
+                  key={eff.id}
+                  onClick={() => updateProfile({ button_effect: eff.id as ButtonEffectId })}
+                  className={`rounded-xl border-2 px-3 py-3 text-xs font-semibold transition-pop ${isActive ? "border-primary bg-primary/10" : "border-border hover:border-primary/50"}`}
+                >
+                  {eff.name}
+                </button>
+              );
+            })}
+          </div>
+        </Card>
+
+        {/* Background pattern */}
+        <Card className="p-6 shadow-card">
+          <h2 className="mb-4 text-lg font-bold">Background pattern</h2>
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+            {BACKGROUND_PATTERNS.map((p) => {
+              const isActive = profile.background_pattern === p.id;
+              return (
+                <button
+                  key={p.id}
+                  onClick={() => updateProfile({ background_pattern: p.id as BackgroundPatternId })}
+                  className={`rounded-xl border-2 px-3 py-3 text-xs font-semibold transition-pop ${isActive ? "border-primary bg-primary/10" : "border-border hover:border-primary/50"}`}
+                >
+                  {p.name}
+                </button>
+              );
+            })}
+          </div>
+        </Card>
+
+        {/* Animation style */}
+        <Card className="p-6 shadow-card">
+          <h2 className="mb-4 text-lg font-bold">Link animation</h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {ANIMATION_STYLES.map((a) => {
+              const isActive = profile.animation_style === a.id;
+              return (
+                <button
+                  key={a.id}
+                  onClick={() => updateProfile({ animation_style: a.id as AnimationStyleId })}
+                  className={`rounded-xl border-2 px-3 py-3 text-xs font-semibold transition-pop ${isActive ? "border-primary bg-primary/10" : "border-border hover:border-primary/50"}`}
+                >
+                  {a.name}
+                </button>
               );
             })}
           </div>
