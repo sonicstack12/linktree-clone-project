@@ -167,14 +167,18 @@ export type Database = {
       }
       profiles: {
         Row: {
+          animation_style: string
           avatar_url: string | null
           background_color: string | null
+          background_pattern: string
           bio: string | null
           button_color: string | null
+          button_effect: string
           button_style: string
           button_text_color: string | null
           created_at: string
           display_name: string | null
+          font_family: string
           id: string
           text_color: string | null
           theme: string
@@ -183,14 +187,18 @@ export type Database = {
           username: string
         }
         Insert: {
+          animation_style?: string
           avatar_url?: string | null
           background_color?: string | null
+          background_pattern?: string
           bio?: string | null
           button_color?: string | null
+          button_effect?: string
           button_style?: string
           button_text_color?: string | null
           created_at?: string
           display_name?: string | null
+          font_family?: string
           id: string
           text_color?: string | null
           theme?: string
@@ -199,14 +207,18 @@ export type Database = {
           username: string
         }
         Update: {
+          animation_style?: string
           avatar_url?: string | null
           background_color?: string | null
+          background_pattern?: string
           bio?: string | null
           button_color?: string | null
+          button_effect?: string
           button_style?: string
           button_text_color?: string | null
           created_at?: string
           display_name?: string | null
+          font_family?: string
           id?: string
           text_color?: string | null
           theme?: string

@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { BUTTON_STYLES, resolveTheme, type ButtonStyleId } from "@/lib/themes";
+import {
+  BUTTON_STYLES, FONT_FAMILIES, resolveTheme, patternCss, patternSize,
+  animationClass, buttonEffectStyle,
+  type ButtonStyleId, type FontFamilyId, type ButtonEffectId,
+  type BackgroundPatternId, type AnimationStyleId, THEMES,
+} from "@/lib/themes";
 import { getSocial } from "@/lib/socials";
 import { toast } from "sonner";
 
@@ -17,6 +22,10 @@ interface ProfileData {
   text_color?: string | null;
   button_color?: string | null;
   button_text_color?: string | null;
+  font_family?: string | null;
+  button_effect?: string | null;
+  background_pattern?: string | null;
+  animation_style?: string | null;
 }
 interface LinkData {
   id: string;
@@ -93,16 +102,43 @@ export function PublicProfileBody({
   onLinkClick?: (linkId: string, url: string) => void;
 }) {
   const theme = resolveTheme(profile);
+  const preset = THEMES[(profile.theme as keyof typeof THEMES)] ?? THEMES.leaf;
   const buttonStyle = BUTTON_STYLES.find((b) => b.id === (profile.button_style as ButtonStyleId)) ?? BUTTON_STYLES[0];
+  const fontFamily = FONT_FAMILIES.find((f) => f.id === (profile.font_family as FontFamilyId)) ?? FONT_FAMILIES[0];
+  const effect = (profile.button_effect as ButtonEffectId) ?? "shadow";
+  const pattern = (profile.background_pattern as BackgroundPatternId) ?? "none";
+  const anim = (profile.animation_style as AnimationStyleId) ?? "fade";
   const visibleLinks = links.filter(isLinkLive);
 
+  const patternStyle: React.CSSProperties = pattern !== "none" ? {
+    backgroundImage: patternCss(pattern, theme.text),
+    backgroundSize: patternSize(pattern),
+  } : {};
+
   return (
-    <div className="min-h-full px-5 pt-12 pb-8" style={{ background: theme.background, color: theme.text }}>
-      <div className="mx-auto flex max-w-md flex-col items-center text-center">
+    <div
+      className="relative min-h-full px-5 pt-12 pb-8"
+      style={{
+        background: preset.backgroundImage
+          ? `${preset.overlay ? preset.overlay + ", " : ""}url(${preset.backgroundImage}), ${theme.background}`
+          : theme.background,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        color: theme.text,
+        fontFamily: fontFamily.cssFamily,
+      }}
+    >
+      {pattern !== "none" && (
+        <div className="pointer-events-none absolute inset-0 opacity-60" style={patternStyle} />
+      )}
+      <div className="relative mx-auto flex max-w-md flex-col items-center text-center">
         {profile.avatar_url ? (
           <img src={profile.avatar_url} alt={profile.username} className="h-24 w-24 rounded-full object-cover shadow-pop" />
         ) : (
-          <div className="grid h-24 w-24 place-items-center rounded-full bg-white/30 text-3xl font-bold shadow-pop backdrop-blur" style={{ color: theme.text }}>
+          <div
+            className="grid h-24 w-24 place-items-center rounded-full text-3xl font-bold shadow-pop backdrop-blur"
+            style={{ background: `${theme.button}33`, color: theme.text }}
+          >
             {(profile.display_name ?? profile.username)[0]?.toUpperCase()}
           </div>
         )}
@@ -124,7 +160,7 @@ export function PublicProfileBody({
                   href={s.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="grid h-9 w-9 place-items-center rounded-full transition-pop hover:scale-110"
+                  className="grid h-9 w-9 place-items-center rounded-full transition-transform duration-200 hover:scale-110"
                   style={{ background: theme.button, color: theme.buttonText }}
                   aria-label={meta.name}
                 >
@@ -138,24 +174,34 @@ export function PublicProfileBody({
         {/* Blocks */}
         <div className="mt-6 flex w-full flex-col gap-3">
           {visibleLinks.length === 0 && <div className="text-xs opacity-60">No links yet</div>}
-          {visibleLinks.map((link) => {
+          {visibleLinks.map((link, idx) => {
+            const animStyle: React.CSSProperties = anim !== "none"
+              ? { animationDelay: `${idx * 60}ms` }
+              : {};
+
             if (link.type === "header") {
               return (
-                <div key={link.id} className="pt-2 pb-1 text-xs font-bold uppercase tracking-wider opacity-70">
+                <div
+                  key={link.id}
+                  className={`pt-2 pb-1 text-xs font-bold uppercase tracking-wider opacity-70 ${animationClass(anim)}`}
+                  style={animStyle}
+                >
                   {link.title}
                 </div>
               );
             }
             if (link.type === "email") {
               return (
-                <EmailCollector
-                  key={link.id}
-                  link={link}
-                  profileId={profile.id}
-                  buttonClass={buttonStyle.className}
-                  buttonStyleId={buttonStyle.id}
-                  theme={theme}
-                />
+                <div key={link.id} className={animationClass(anim)} style={animStyle}>
+                  <EmailCollector
+                    link={link}
+                    profileId={profile.id}
+                    buttonClass={buttonStyle.className}
+                    buttonStyleId={buttonStyle.id}
+                    theme={theme}
+                    effect={effect}
+                  />
+                </div>
               );
             }
             return (
@@ -165,11 +211,13 @@ export function PublicProfileBody({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => onLinkClick?.(link.id, link.url)}
-                className={`block w-full px-5 py-3 text-sm font-semibold transition-pop hover:scale-[1.02] hover:shadow-pop ${buttonStyle.className}`}
+                className={`block w-full px-5 py-3 text-sm font-semibold transition-transform duration-200 hover:scale-[1.02] ${buttonStyle.className} ${animationClass(anim)}`}
                 style={{
                   background: buttonStyle.id === "outline" ? "transparent" : theme.button,
                   color: buttonStyle.id === "outline" ? theme.text : theme.buttonText,
                   borderColor: buttonStyle.id === "outline" ? theme.button : undefined,
+                  ...buttonEffectStyle(effect, theme.accent),
+                  ...animStyle,
                 }}
               >
                 {link.title}
@@ -190,12 +238,14 @@ function EmailCollector({
   buttonClass,
   buttonStyleId,
   theme,
+  effect,
 }: {
   link: LinkData;
   profileId: string;
   buttonClass: string;
   buttonStyleId: string;
-  theme: { button: string; buttonText: string; text: string };
+  theme: { button: string; buttonText: string; text: string; accent: string };
+  effect: ButtonEffectId;
 }) {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -240,19 +290,17 @@ function EmailCollector({
           onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"
           className={`flex-1 px-3 py-3 text-sm outline-none ring-2 ring-transparent focus:ring-current ${buttonClass}`}
-          style={{
-            background: "rgba(255,255,255,0.7)",
-            color: "oklch(0.20 0.02 240)",
-          }}
+          style={{ background: "rgba(255,255,255,0.7)", color: "oklch(0.20 0.02 240)" }}
         />
         <button
           type="submit"
           disabled={submitting}
-          className={`px-4 py-3 text-sm font-semibold transition-pop hover:scale-[1.02] ${buttonClass}`}
+          className={`px-4 py-3 text-sm font-semibold transition-transform duration-200 hover:scale-[1.02] ${buttonClass}`}
           style={{
             background: buttonStyleId === "outline" ? "transparent" : theme.button,
             color: buttonStyleId === "outline" ? theme.text : theme.buttonText,
             borderColor: buttonStyleId === "outline" ? theme.button : undefined,
+            ...buttonEffectStyle(effect, theme.accent),
           }}
         >
           {submitting ? "..." : "Join"}
