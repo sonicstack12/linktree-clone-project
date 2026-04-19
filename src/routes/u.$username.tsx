@@ -26,23 +26,51 @@ export const Route = createFileRoute("/u/$username")({
     ]);
     return { profile, links: l.data ?? [], socials: s.data ?? [] };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     const p = loaderData?.profile;
     if (!p) return { meta: [{ title: "Not found — Linkly" }] };
-    const title = `@${p.username} — Linkly`;
-    const desc = p.bio ?? `Find @${p.username} on Linkly.`;
+    const handle = p.username;
+    const name = p.display_name ?? `@${handle}`;
+    const title = `${name} (@${handle}) — Linkly`;
+    const desc = p.bio ?? `Find @${handle} on Linkly — all their links in one place.`;
+    // Use uploaded avatar when available; otherwise fall back to dynamic OG endpoint.
+    const ogImage = p.avatar_url ?? `/og/u/${params?.username ?? handle}.svg`;
+
     const meta: Array<Record<string, string>> = [
       { title },
       { name: "description", content: desc },
       { property: "og:title", content: title },
       { property: "og:description", content: desc },
       { property: "og:type", content: "profile" },
+      { property: "og:image", content: ogImage },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: desc },
+      { name: "twitter:image", content: ogImage },
     ];
-    if (p.avatar_url) {
-      meta.push({ property: "og:image", content: p.avatar_url });
-      meta.push({ name: "twitter:image", content: p.avatar_url });
-    }
-    return { meta };
+
+    // JSON-LD Person schema for rich Google results
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      name,
+      alternateName: `@${handle}`,
+      description: desc,
+      ...(p.avatar_url ? { image: p.avatar_url } : {}),
+      url: typeof window !== "undefined" ? window.location.href : `/u/${handle}`,
+    };
+
+    return {
+      meta,
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(jsonLd),
+        },
+      ],
+    };
   },
 });
 
@@ -50,7 +78,6 @@ function PublicProfilePage() {
   const { profile, links, socials } = Route.useLoaderData();
   const [tracked, setTracked] = useState(false);
 
-  // Record a page view once on mount.
   useEffect(() => {
     if (!profile || tracked) return;
     setTracked(true);
