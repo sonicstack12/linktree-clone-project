@@ -8,8 +8,11 @@ export const Route = createFileRoute("/pricing")({
   component: PricingPage,
   head: () => ({
     meta: [
-      { title: "Pricing — Linkly" },
-      { name: "description", content: "Free forever. Upgrade when you're ready for more." },
+      { title: "Pricing — Free forever, Pro $5/mo | Linkly" },
+      { name: "description", content: "Linkly is free forever. Upgrade to Pro for $5/month for advanced analytics, custom domain, link scheduling and no branding." },
+      { property: "og:title", content: "Linkly Pricing — Free forever, Pro $5/mo" },
+      { property: "og:description", content: "Start free. Upgrade only when you need more — advanced analytics, custom domain, scheduling and more." },
+      { property: "og:type", content: "website" },
     ],
   }),
 });

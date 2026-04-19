@@ -8,8 +8,11 @@ export const Route = createFileRoute("/discover")({
   component: DiscoverPage,
   head: () => ({
     meta: [
-      { title: "Discover creators — Linkly" },
-      { name: "description", content: "Find creators, brands and businesses on Linkly." },
+      { title: "Discover creators on Linkly — browse the community" },
+      { name: "description", content: "Browse creators, brands and businesses on Linkly. Find your next favorite link-in-bio page." },
+      { property: "og:title", content: "Discover creators on Linkly" },
+      { property: "og:description", content: "Browse the latest creators, brands and businesses on Linkly." },
+      { property: "og:type", content: "website" },
     ],
   }),
 });
