@@ -34,6 +34,12 @@ interface ProfileRow {
   button_effect: string;
   background_pattern: string;
   animation_style: string;
+  layout: string;
+  auto_dark: boolean;
+  glass_effect: boolean;
+  privacy_mode: boolean;
+  verified: boolean;
+  verified_source: string | null;
 }
 
 const DEFAULT_CUSTOM = {
