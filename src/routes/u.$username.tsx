@@ -81,10 +81,16 @@ function PublicProfilePage() {
   useEffect(() => {
     if (!profile || tracked) return;
     setTracked(true);
-    supabase.from("page_views").insert({
-      profile_id: profile.id,
-      referrer: document.referrer || null,
-      user_agent: navigator.userAgent,
+    // Privacy mode: skip all tracking
+    if (profile.privacy_mode) return;
+    import("@/lib/deepLinks").then(({ detectSource }) => {
+      const source = detectSource(document.referrer || "", navigator.userAgent);
+      supabase.from("page_views").insert({
+        profile_id: profile.id,
+        referrer: document.referrer || null,
+        user_agent: navigator.userAgent,
+        source,
+      });
     });
   }, [profile, tracked]);
 
@@ -103,11 +109,16 @@ function PublicProfilePage() {
   }
 
   const handleLinkClick = (linkId: string) => {
-    supabase.from("click_events").insert({
-      link_id: linkId,
-      profile_id: profile.id,
-      referrer: document.referrer || null,
-      user_agent: navigator.userAgent,
+    if (profile.privacy_mode) return;
+    import("@/lib/deepLinks").then(({ detectSource }) => {
+      const source = detectSource(document.referrer || "", navigator.userAgent);
+      supabase.from("click_events").insert({
+        link_id: linkId,
+        profile_id: profile.id,
+        referrer: document.referrer || null,
+        user_agent: navigator.userAgent,
+        source,
+      });
     });
   };
 

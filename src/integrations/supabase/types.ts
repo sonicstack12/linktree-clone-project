@@ -21,6 +21,7 @@ export type Database = {
           link_id: string
           profile_id: string
           referrer: string | null
+          source: string | null
           user_agent: string | null
         }
         Insert: {
@@ -29,6 +30,7 @@ export type Database = {
           link_id: string
           profile_id: string
           referrer?: string | null
+          source?: string | null
           user_agent?: string | null
         }
         Update: {
@@ -37,6 +39,7 @@ export type Database = {
           link_id?: string
           profile_id?: string
           referrer?: string | null
+          source?: string | null
           user_agent?: string | null
         }
         Relationships: [
@@ -82,6 +85,7 @@ export type Database = {
       }
       links: {
         Row: {
+          bento_size: string
           created_at: string
           enabled: boolean
           end_at: string | null
@@ -96,6 +100,7 @@ export type Database = {
           url: string
         }
         Insert: {
+          bento_size?: string
           created_at?: string
           enabled?: boolean
           end_at?: string | null
@@ -110,6 +115,7 @@ export type Database = {
           url: string
         }
         Update: {
+          bento_size?: string
           created_at?: string
           enabled?: boolean
           end_at?: string | null
@@ -139,6 +145,7 @@ export type Database = {
           id: string
           profile_id: string
           referrer: string | null
+          source: string | null
           user_agent: string | null
         }
         Insert: {
@@ -146,6 +153,7 @@ export type Database = {
           id?: string
           profile_id: string
           referrer?: string | null
+          source?: string | null
           user_agent?: string | null
         }
         Update: {
@@ -153,6 +161,7 @@ export type Database = {
           id?: string
           profile_id?: string
           referrer?: string | null
+          source?: string | null
           user_agent?: string | null
         }
         Relationships: [
@@ -168,6 +177,7 @@ export type Database = {
       profiles: {
         Row: {
           animation_style: string
+          auto_dark: boolean
           avatar_url: string | null
           background_color: string | null
           background_pattern: string
@@ -179,15 +189,21 @@ export type Database = {
           created_at: string
           display_name: string | null
           font_family: string
+          glass_effect: boolean
           id: string
+          layout: string
+          privacy_mode: boolean
           text_color: string | null
           theme: string
           updated_at: string
           use_custom_colors: boolean
           username: string
+          verified: boolean
+          verified_source: string | null
         }
         Insert: {
           animation_style?: string
+          auto_dark?: boolean
           avatar_url?: string | null
           background_color?: string | null
           background_pattern?: string
@@ -199,15 +215,21 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           font_family?: string
+          glass_effect?: boolean
           id: string
+          layout?: string
+          privacy_mode?: boolean
           text_color?: string | null
           theme?: string
           updated_at?: string
           use_custom_colors?: boolean
           username: string
+          verified?: boolean
+          verified_source?: string | null
         }
         Update: {
           animation_style?: string
+          auto_dark?: boolean
           avatar_url?: string | null
           background_color?: string | null
           background_pattern?: string
@@ -219,12 +241,17 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           font_family?: string
+          glass_effect?: boolean
           id?: string
+          layout?: string
+          privacy_mode?: boolean
           text_color?: string | null
           theme?: string
           updated_at?: string
           use_custom_colors?: boolean
           username?: string
+          verified?: boolean
+          verified_source?: string | null
         }
         Relationships: []
       }
