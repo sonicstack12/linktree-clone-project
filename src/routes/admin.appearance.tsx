@@ -374,3 +374,22 @@ function AppearancePage() {
     </div>
   );
 }
+
+function ToggleRow({ icon, title, desc, checked, onChange }: {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <div className="flex items-center gap-3 rounded-xl border-2 border-border p-4">
+      <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary/10">{icon}</div>
+      <div className="flex-1">
+        <div className="text-sm font-semibold">{title}</div>
+        <p className="text-xs text-muted-foreground">{desc}</p>
+      </div>
+      <Switch checked={checked} onCheckedChange={onChange} />
+    </div>
+  );
+}
