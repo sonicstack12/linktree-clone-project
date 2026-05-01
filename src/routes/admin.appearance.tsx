@@ -13,7 +13,8 @@ import {
 } from "@/lib/themes";
 import { ProfilePreview } from "@/components/ProfilePreview";
 import { ColorPicker } from "@/components/ColorPicker";
-import { Check } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Check, LayoutGrid, List, Sparkles, ShieldCheck, BadgeCheck, Moon } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/appearance")({
