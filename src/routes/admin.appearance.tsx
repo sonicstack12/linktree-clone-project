@@ -131,7 +131,96 @@ function AppearancePage() {
           </div>
         </Card>
 
-        {/* Themes */}
+        {/* Layout */}
+        <Card className="p-6 shadow-card">
+          <h2 className="mb-1 text-lg font-bold">Layout</h2>
+          <p className="mb-4 text-xs text-muted-foreground">Switch between a classic stacked list and a modern Bento grid.</p>
+          <div className="grid grid-cols-2 gap-3">
+            {([
+              { id: "classic", name: "Classic list", icon: List },
+              { id: "bento", name: "Bento grid", icon: LayoutGrid },
+            ] as const).map((opt) => {
+              const isActive = (profile.layout ?? "classic") === opt.id;
+              const Icon = opt.icon;
+              return (
+                <button
+                  key={opt.id}
+                  onClick={() => updateProfile({ layout: opt.id })}
+                  className={`flex flex-col items-center gap-2 rounded-2xl border-2 p-5 transition-pop ${isActive ? "border-primary bg-primary/10 shadow-pop" : "border-border hover:border-primary/50"}`}
+                >
+                  <Icon className="h-6 w-6" />
+                  <div className="text-sm font-semibold">{opt.name}</div>
+                </button>
+              );
+            })}
+          </div>
+        </Card>
+
+        {/* Visual effects */}
+        <Card className="p-6 shadow-card">
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-bold">
+            <Sparkles className="h-5 w-5 text-primary" /> Visual effects
+          </h2>
+          <div className="space-y-4">
+            <ToggleRow
+              icon={<div className="grid h-9 w-9 place-items-center rounded-full bg-white/40 backdrop-blur-md ring-1 ring-white/60" />}
+              title="Glassmorphism"
+              desc="Frosted glass blur on link blocks — looks premium on photo backgrounds."
+              checked={profile.glass_effect}
+              onChange={(v) => updateProfile({ glass_effect: v })}
+            />
+            <ToggleRow
+              icon={<Moon className="h-5 w-5 text-primary" />}
+              title="Auto-adapt to dark mode"
+              desc="Switch to a dark palette when visitors prefer dark theme on their device."
+              checked={profile.auto_dark}
+              onChange={(v) => updateProfile({ auto_dark: v })}
+            />
+          </div>
+        </Card>
+
+        {/* Trust & Privacy */}
+        <Card className="p-6 shadow-card">
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-bold">
+            <ShieldCheck className="h-5 w-5 text-primary" /> Trust &amp; Privacy
+          </h2>
+          <div className="space-y-4">
+            <ToggleRow
+              icon={<ShieldCheck className="h-5 w-5 text-primary" />}
+              title="Privacy First mode"
+              desc="Disable all analytics tracking. Show a 'Privacy First' badge on your page."
+              checked={profile.privacy_mode}
+              onChange={(v) => updateProfile({ privacy_mode: v })}
+            />
+            <div className="rounded-xl border-2 border-dashed border-border p-4">
+              <div className="flex items-center gap-3">
+                <BadgeCheck className={`h-5 w-5 ${profile.verified ? "text-primary fill-primary/20" : "text-muted-foreground"}`} />
+                <div className="flex-1">
+                  <div className="text-sm font-semibold">Verified creator badge</div>
+                  <p className="text-xs text-muted-foreground">Paste a public profile URL (GitHub, LinkedIn, X) that shows your linkly handle in the bio. Free verification.</p>
+                </div>
+                <Switch
+                  checked={profile.verified}
+                  onCheckedChange={async (v) => {
+                    if (v && !profile.verified_source) {
+                      toast.error("Add a verification source URL first");
+                      return;
+                    }
+                    await updateProfile({ verified: v });
+                  }}
+                />
+              </div>
+              <Input
+                className="mt-3"
+                placeholder="https://github.com/yourname"
+                value={profile.verified_source ?? ""}
+                onChange={(e) => updateProfile({ verified_source: e.target.value || null })}
+              />
+            </div>
+          </div>
+        </Card>
+
+
         <Card className="p-6 shadow-card">
           <h2 className="mb-4 text-lg font-bold">Theme</h2>
           <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-5">
