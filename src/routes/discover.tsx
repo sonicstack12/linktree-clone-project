@@ -56,7 +56,7 @@ function DiscoverPage() {
         ) : (
           <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {profiles.map((p) => (
-              <Link key={p.id} to="/$username" params={{ username: p.username }}>
+              <Link key={p.id} to="/u/$username" params={{ username: p.username }}>
                 <Card className="flex items-center gap-3 p-4 shadow-card transition-pop hover:-translate-y-1 hover:shadow-pop">
                   {p.avatar_url ? (
                     <img src={p.avatar_url} alt={p.username} className="h-12 w-12 rounded-full object-cover" />
