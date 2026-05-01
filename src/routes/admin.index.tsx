@@ -45,6 +45,7 @@ interface LinkRow {
   type: LinkType;
   start_at: string | null;
   end_at: string | null;
+  bento_size: string;
 }
 
 interface ProfileRow {
@@ -280,29 +281,48 @@ function SortableLinkRow({
       <Collapsible>
         <CollapsibleTrigger className="mt-3 flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground">
           <Calendar className="h-3.5 w-3.5" />
-          Schedule
+          Schedule & layout
           {hasSchedule && <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold text-primary">Active</span>}
           <ChevronDown className="h-3 w-3" />
         </CollapsibleTrigger>
-        <CollapsibleContent className="mt-3 grid gap-3 sm:grid-cols-2">
-          <div>
-            <Label className="text-xs">Show from</Label>
-            <Input
-              type="datetime-local"
-              value={toLocalInput(link.start_at)}
-              onChange={(e) => onChange(link.id, { start_at: fromLocalInput(e.target.value) })}
-              className="mt-1"
-            />
+        <CollapsibleContent className="mt-3 space-y-3">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <Label className="text-xs">Show from</Label>
+              <Input
+                type="datetime-local"
+                value={toLocalInput(link.start_at)}
+                onChange={(e) => onChange(link.id, { start_at: fromLocalInput(e.target.value) })}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Hide after</Label>
+              <Input
+                type="datetime-local"
+                value={toLocalInput(link.end_at)}
+                onChange={(e) => onChange(link.id, { end_at: fromLocalInput(e.target.value) })}
+                className="mt-1"
+              />
+            </div>
           </div>
-          <div>
-            <Label className="text-xs">Hide after</Label>
-            <Input
-              type="datetime-local"
-              value={toLocalInput(link.end_at)}
-              onChange={(e) => onChange(link.id, { end_at: fromLocalInput(e.target.value) })}
-              className="mt-1"
-            />
-          </div>
+          {link.type === "link" && (
+            <div>
+              <Label className="text-xs">Bento tile size (when bento layout is enabled)</Label>
+              <div className="mt-1.5 flex gap-2">
+                {(["1x1", "2x1", "2x2"] as const).map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => onChange(link.id, { bento_size: s })}
+                    className={`flex-1 rounded-lg border-2 px-3 py-2 text-xs font-semibold transition-pop ${(link.bento_size ?? "1x1") === s ? "border-primary bg-primary/10" : "border-border hover:border-primary/50"}`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </CollapsibleContent>
       </Collapsible>
     </Card>
