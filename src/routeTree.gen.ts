@@ -18,7 +18,9 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
+import { Route as AdminVerificationRouteImport } from './routes/admin.verification'
 import { Route as AdminSubscribersRouteImport } from './routes/admin.subscribers'
+import { Route as AdminReviewRouteImport } from './routes/admin.review'
 import { Route as AdminPreviewRouteImport } from './routes/admin.preview'
 import { Route as AdminAppearanceRouteImport } from './routes/admin.appearance'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
@@ -69,9 +71,19 @@ const UUsernameRoute = UUsernameRouteImport.update({
   path: '/u/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminVerificationRoute = AdminVerificationRouteImport.update({
+  id: '/verification',
+  path: '/verification',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSubscribersRoute = AdminSubscribersRouteImport.update({
   id: '/subscribers',
   path: '/subscribers',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReviewRoute = AdminReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminPreviewRoute = AdminPreviewRouteImport.update({
@@ -106,7 +118,9 @@ export interface FileRoutesByFullPath {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/appearance': typeof AdminAppearanceRoute
   '/admin/preview': typeof AdminPreviewRoute
+  '/admin/review': typeof AdminReviewRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/admin/verification': typeof AdminVerificationRoute
   '/u/$username': typeof UUsernameRoute
   '/admin/': typeof AdminIndexRoute
   '/og/u/$username': typeof OgUUsernameRoute
@@ -121,7 +135,9 @@ export interface FileRoutesByTo {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/appearance': typeof AdminAppearanceRoute
   '/admin/preview': typeof AdminPreviewRoute
+  '/admin/review': typeof AdminReviewRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/admin/verification': typeof AdminVerificationRoute
   '/u/$username': typeof UUsernameRoute
   '/admin': typeof AdminIndexRoute
   '/og/u/$username': typeof OgUUsernameRoute
@@ -138,7 +154,9 @@ export interface FileRoutesById {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/appearance': typeof AdminAppearanceRoute
   '/admin/preview': typeof AdminPreviewRoute
+  '/admin/review': typeof AdminReviewRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/admin/verification': typeof AdminVerificationRoute
   '/u/$username': typeof UUsernameRoute
   '/admin/': typeof AdminIndexRoute
   '/og/u/$username': typeof OgUUsernameRoute
@@ -156,7 +174,9 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/appearance'
     | '/admin/preview'
+    | '/admin/review'
     | '/admin/subscribers'
+    | '/admin/verification'
     | '/u/$username'
     | '/admin/'
     | '/og/u/$username'
@@ -171,7 +191,9 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/appearance'
     | '/admin/preview'
+    | '/admin/review'
     | '/admin/subscribers'
+    | '/admin/verification'
     | '/u/$username'
     | '/admin'
     | '/og/u/$username'
@@ -187,7 +209,9 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/appearance'
     | '/admin/preview'
+    | '/admin/review'
     | '/admin/subscribers'
+    | '/admin/verification'
     | '/u/$username'
     | '/admin/'
     | '/og/u/$username'
@@ -270,11 +294,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/verification': {
+      id: '/admin/verification'
+      path: '/verification'
+      fullPath: '/admin/verification'
+      preLoaderRoute: typeof AdminVerificationRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/subscribers': {
       id: '/admin/subscribers'
       path: '/subscribers'
       fullPath: '/admin/subscribers'
       preLoaderRoute: typeof AdminSubscribersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/review': {
+      id: '/admin/review'
+      path: '/review'
+      fullPath: '/admin/review'
+      preLoaderRoute: typeof AdminReviewRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/preview': {
@@ -312,7 +350,9 @@ interface AdminRouteChildren {
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminAppearanceRoute: typeof AdminAppearanceRoute
   AdminPreviewRoute: typeof AdminPreviewRoute
+  AdminReviewRoute: typeof AdminReviewRoute
   AdminSubscribersRoute: typeof AdminSubscribersRoute
+  AdminVerificationRoute: typeof AdminVerificationRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -320,7 +360,9 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminAppearanceRoute: AdminAppearanceRoute,
   AdminPreviewRoute: AdminPreviewRoute,
+  AdminReviewRoute: AdminReviewRoute,
   AdminSubscribersRoute: AdminSubscribersRoute,
+  AdminVerificationRoute: AdminVerificationRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
