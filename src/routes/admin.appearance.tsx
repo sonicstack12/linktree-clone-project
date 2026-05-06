@@ -14,7 +14,7 @@ import {
 import { ProfilePreview } from "@/components/ProfilePreview";
 import { ColorPicker } from "@/components/ColorPicker";
 import { Input } from "@/components/ui/input";
-import { Check, LayoutGrid, List, Sparkles, ShieldCheck, BadgeCheck, Moon } from "lucide-react";
+import { Check, LayoutGrid, List, Sparkles, ShieldCheck, BadgeCheck, Moon, Globe, Copy } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/appearance")({
@@ -41,6 +41,7 @@ interface ProfileRow {
   privacy_mode: boolean;
   verified: boolean;
   verified_source: string | null;
+  custom_domain: string | null;
 }
 
 const DEFAULT_CUSTOM = {
@@ -218,6 +219,48 @@ function AppearancePage() {
               />
             </div>
           </div>
+        </Card>
+
+        {/* Custom domain */}
+        <Card className="p-6 shadow-card">
+          <h2 className="mb-1 flex items-center gap-2 text-lg font-bold">
+            <Globe className="h-5 w-5 text-primary" /> Custom domain
+          </h2>
+          <p className="mb-4 text-xs text-muted-foreground">
+            Use <span className="font-mono">links.yourbrand.com</span> instead of /u/{profile.username}.
+            Free on Linkly — no $15/mo upcharge.
+          </p>
+          <Input
+            placeholder="links.yourbrand.com"
+            value={profile.custom_domain ?? ""}
+            onChange={(e) => updateProfile({ custom_domain: e.target.value.trim().toLowerCase() || null })}
+          />
+          {profile.custom_domain && (
+            <div className="mt-4 space-y-2 rounded-xl border-2 border-dashed border-border p-4 text-xs">
+              <div className="font-semibold">DNS setup</div>
+              <p className="text-muted-foreground">Add this CNAME at your domain registrar, then we auto-issue SSL.</p>
+              <div className="grid grid-cols-[80px_1fr_auto] items-center gap-2 font-mono text-[11px]">
+                <span className="opacity-60">Type</span><span>CNAME</span><span></span>
+                <span className="opacity-60">Name</span>
+                <span>{profile.custom_domain.split(".")[0]}</span>
+                <button
+                  type="button"
+                  onClick={() => { navigator.clipboard.writeText(profile.custom_domain!.split(".")[0]); toast.success("Copied"); }}
+                  className="rounded p-1 hover:bg-muted"
+                ><Copy className="h-3 w-3" /></button>
+                <span className="opacity-60">Target</span>
+                <span>cname.linkly.app</span>
+                <button
+                  type="button"
+                  onClick={() => { navigator.clipboard.writeText("cname.linkly.app"); toast.success("Copied"); }}
+                  className="rounded p-1 hover:bg-muted"
+                ><Copy className="h-3 w-3" /></button>
+              </div>
+              <p className="pt-2 text-muted-foreground">
+                Status: <span className="font-semibold text-amber-600">Pending verification</span> — propagation can take up to 24h.
+              </p>
+            </div>
+          )}
         </Card>
 
 
