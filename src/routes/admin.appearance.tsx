@@ -197,26 +197,22 @@ function AppearancePage() {
               <div className="flex items-center gap-3">
                 <BadgeCheck className={`h-5 w-5 ${profile.verified ? "text-primary fill-primary/20" : "text-muted-foreground"}`} />
                 <div className="flex-1">
-                  <div className="text-sm font-semibold">Verified creator badge</div>
-                  <p className="text-xs text-muted-foreground">Paste a public profile URL (GitHub, LinkedIn, X) that shows your linkly handle in the bio. Free verification.</p>
+                  <div className="text-sm font-semibold">
+                    {profile.verified ? "You're verified ✓" : "Verified creator badge"}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {profile.verified
+                      ? "Your green ✓ is showing on your public page."
+                      : "Submit social proof (GitHub, LinkedIn, X…) for free verification — reviewed within 48h."}
+                  </p>
                 </div>
-                <Switch
-                  checked={profile.verified}
-                  onCheckedChange={async (v) => {
-                    if (v && !profile.verified_source) {
-                      toast.error("Add a verification source URL first");
-                      return;
-                    }
-                    await updateProfile({ verified: v });
-                  }}
-                />
+                <a
+                  href="/admin/verification"
+                  className="rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90"
+                >
+                  {profile.verified ? "Manage" : "Apply"}
+                </a>
               </div>
-              <Input
-                className="mt-3"
-                placeholder="https://github.com/yourname"
-                value={profile.verified_source ?? ""}
-                onChange={(e) => updateProfile({ verified_source: e.target.value || null })}
-              />
             </div>
           </div>
         </Card>
