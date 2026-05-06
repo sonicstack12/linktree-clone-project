@@ -187,6 +187,7 @@ export type Database = {
           button_style: string
           button_text_color: string | null
           created_at: string
+          custom_domain: string | null
           display_name: string | null
           font_family: string
           glass_effect: boolean
@@ -213,6 +214,7 @@ export type Database = {
           button_style?: string
           button_text_color?: string | null
           created_at?: string
+          custom_domain?: string | null
           display_name?: string | null
           font_family?: string
           glass_effect?: boolean
@@ -239,6 +241,7 @@ export type Database = {
           button_style?: string
           button_text_color?: string | null
           created_at?: string
+          custom_domain?: string | null
           display_name?: string | null
           font_family?: string
           glass_effect?: boolean

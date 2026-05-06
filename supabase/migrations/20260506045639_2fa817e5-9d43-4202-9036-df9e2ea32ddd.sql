@@ -1,0 +1,2 @@
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS custom_domain text;
+CREATE UNIQUE INDEX IF NOT EXISTS profiles_custom_domain_key ON public.profiles (lower(custom_domain)) WHERE custom_domain IS NOT NULL;
