@@ -260,13 +260,17 @@ function SortableLinkRow({
             placeholder={link.type === "header" ? "Section title" : "Title"}
             className="border-0 px-0 text-base font-semibold shadow-none focus-visible:ring-0"
           />
-          {link.type === "link" && (
+          {(link.type === "link" || link.type === "github_stats" || link.type === "discord_stats") && (
             <div className="flex items-center gap-2">
               <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
               <Input
                 value={link.url}
                 onChange={(e) => onChange(link.id, { url: e.target.value })}
-                placeholder="https://..."
+                placeholder={
+                  link.type === "github_stats" ? "github.com/yourname or just 'yourname'"
+                  : link.type === "discord_stats" ? "discord.gg/yourcode"
+                  : "https://..."
+                }
                 className="border-0 px-0 text-sm text-muted-foreground shadow-none focus-visible:ring-0"
               />
             </div>
