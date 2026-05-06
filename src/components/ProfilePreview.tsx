@@ -12,6 +12,7 @@ import { openWithDeepLink } from "@/lib/deepLinks";
 import { detectEmbed } from "@/lib/embeds";
 import { useReveal } from "@/hooks/useReveal";
 import { BadgeCheck, ShieldCheck } from "lucide-react";
+import { StatBlock } from "@/components/StatBlock";
 
 interface ProfileData {
   id: string;
@@ -317,6 +318,21 @@ function ClassicBlock(props: BlockProps) {
           buttonStyleId={buttonStyle.id}
           theme={theme}
           effect={effect}
+        />
+      </div>
+    );
+  }
+  if (link.type === "github_stats" || link.type === "discord_stats") {
+    return (
+      <div ref={revealRef} className={`reveal-on-scroll ${animationClass(anim)}`} style={animStyle}>
+        <StatBlock
+          type={link.type}
+          url={link.url}
+          title={link.title}
+          theme={theme}
+          glass={glass}
+          glassClass={glassClass}
+          buttonClass={buttonStyle.className}
         />
       </div>
     );

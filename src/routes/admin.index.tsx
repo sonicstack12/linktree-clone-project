@@ -9,7 +9,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
-  GripVertical, Plus, Trash2, ExternalLink, Link2, Heading, Mail, ChevronDown, Calendar,
+  GripVertical, Plus, Trash2, ExternalLink, Link2, Heading, Mail, ChevronDown, Calendar, Github, MessageCircle,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/admin/")({
   component: LinksEditor,
 });
 
-type LinkType = "link" | "header" | "email";
+type LinkType = "link" | "header" | "email" | "github_stats" | "discord_stats";
 
 interface LinkRow {
   id: string;
@@ -62,6 +62,8 @@ const BLOCK_TYPES: { id: LinkType; name: string; icon: typeof Link2; defaults: P
   { id: "link", name: "Link", icon: Link2, defaults: { title: "New link", url: "https://" } },
   { id: "header", name: "Section header", icon: Heading, defaults: { title: "Section title", url: "" } },
   { id: "email", name: "Email collector", icon: Mail, defaults: { title: "Join my newsletter", url: "" } },
+  { id: "github_stats", name: "GitHub live stats", icon: Github, defaults: { title: "Follow me on GitHub", url: "https://github.com/yourname" } },
+  { id: "discord_stats", name: "Discord live stats", icon: MessageCircle, defaults: { title: "Join the Discord", url: "https://discord.gg/yourcode" } },
 ];
 
 function LinksEditor() {
@@ -258,13 +260,17 @@ function SortableLinkRow({
             placeholder={link.type === "header" ? "Section title" : "Title"}
             className="border-0 px-0 text-base font-semibold shadow-none focus-visible:ring-0"
           />
-          {link.type === "link" && (
+          {(link.type === "link" || link.type === "github_stats" || link.type === "discord_stats") && (
             <div className="flex items-center gap-2">
               <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
               <Input
                 value={link.url}
                 onChange={(e) => onChange(link.id, { url: e.target.value })}
-                placeholder="https://..."
+                placeholder={
+                  link.type === "github_stats" ? "github.com/yourname or just 'yourname'"
+                  : link.type === "discord_stats" ? "discord.gg/yourcode"
+                  : "https://..."
+                }
                 className="border-0 px-0 text-sm text-muted-foreground shadow-none focus-visible:ring-0"
               />
             </div>
