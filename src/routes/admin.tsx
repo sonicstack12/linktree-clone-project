@@ -1,6 +1,7 @@
 import { createFileRoute, Link, Outlet, useNavigate, useLocation } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Logo } from "@/components/Logo";
+import { OnboardingTour } from "@/components/OnboardingTour";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { LayoutDashboard, Palette, BarChart3, Eye, LogOut, BadgeCheck, ShieldCheck } from "lucide-react";
@@ -86,6 +87,7 @@ function AdminLayout() {
           <Outlet />
         </main>
       </div>
+      <OnboardingTour />
     </div>
   );
 }
