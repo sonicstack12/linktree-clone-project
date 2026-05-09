@@ -195,6 +195,15 @@ export function PublicProfileBody({
         {profile.display_name && profile.display_name !== profile.username && (
           <div className="text-sm font-medium opacity-90">{profile.display_name}</div>
         )}
+        {profile.verified && (
+          <div
+            className="mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wide shadow-sm"
+            style={{ background: theme.accent, color: theme.buttonText }}
+            title={profile.verified_source ? `Verified via ${profile.verified_source}` : "Verified"}
+          >
+            <BadgeCheck className="h-3 w-3 fill-current" /> Verified creator
+          </div>
+        )}
         {profile.bio && <p className="mt-2 max-w-xs text-sm opacity-80">{profile.bio}</p>}
 
         {profile.privacy_mode && (
