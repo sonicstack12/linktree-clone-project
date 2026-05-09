@@ -7,7 +7,7 @@ import {
   type BackgroundPatternId, type AnimationStyleId, THEMES,
 } from "@/lib/themes";
 import { getSocial } from "@/lib/socials";
-import { toast } from "sonner";
+
 import { openWithDeepLink } from "@/lib/deepLinks";
 import { detectEmbed } from "@/lib/embeds";
 import { useReveal } from "@/hooks/useReveal";
