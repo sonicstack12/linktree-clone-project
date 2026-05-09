@@ -28,6 +28,15 @@ interface RequestRow {
 
 const PLATFORMS = ["GitHub", "LinkedIn", "X / Twitter", "Instagram", "YouTube", "Other"] as const;
 
+const PLATFORM_HOSTS: Record<typeof PLATFORMS[number], RegExp | null> = {
+  "GitHub": /(^|\.)github\.com$/i,
+  "LinkedIn": /(^|\.)linkedin\.com$/i,
+  "X / Twitter": /(^|\.)(x|twitter)\.com$/i,
+  "Instagram": /(^|\.)instagram\.com$/i,
+  "YouTube": /(^|\.)(youtube\.com|youtu\.be)$/i,
+  "Other": null,
+};
+
 const schema = z.object({
   platform: z.enum(PLATFORMS),
   proof_url: z.string().trim().url("Must be a valid URL").max(500),
