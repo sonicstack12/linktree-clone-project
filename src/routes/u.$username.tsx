@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { BadgeCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PublicProfileBody } from "@/components/ProfilePreview";
 
@@ -124,6 +125,12 @@ function PublicProfilePage() {
 
   return (
     <div className="min-h-screen">
+      {profile.verified && (
+        <div className="sticky top-0 z-30 flex items-center justify-center gap-2 bg-gradient-to-r from-primary/90 via-primary to-primary/90 px-4 py-1.5 text-xs font-semibold text-primary-foreground shadow-md backdrop-blur">
+          <BadgeCheck className="h-4 w-4 fill-current" />
+          <span>Verified creator{profile.verified_source ? ` · proof: ${new URL(profile.verified_source).hostname}` : ""}</span>
+        </div>
+      )}
       <PublicProfileBody profile={profile} links={links} socials={socials} onLinkClick={handleLinkClick} />
     </div>
   );

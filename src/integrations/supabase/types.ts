@@ -59,30 +59,6 @@ export type Database = {
           },
         ]
       }
-      email_subscribers: {
-        Row: {
-          created_at: string
-          email: string
-          id: string
-          profile_id: string
-          source_link_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          email: string
-          id?: string
-          profile_id: string
-          source_link_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          email?: string
-          id?: string
-          profile_id?: string
-          source_link_id?: string | null
-        }
-        Relationships: []
-      }
       links: {
         Row: {
           bento_size: string

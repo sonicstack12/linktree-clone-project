@@ -28,6 +28,15 @@ interface RequestRow {
 
 const PLATFORMS = ["GitHub", "LinkedIn", "X / Twitter", "Instagram", "YouTube", "Other"] as const;
 
+const PLATFORM_HOSTS: Record<typeof PLATFORMS[number], RegExp | null> = {
+  "GitHub": /(^|\.)github\.com$/i,
+  "LinkedIn": /(^|\.)linkedin\.com$/i,
+  "X / Twitter": /(^|\.)(x|twitter)\.com$/i,
+  "Instagram": /(^|\.)instagram\.com$/i,
+  "YouTube": /(^|\.)(youtube\.com|youtu\.be)$/i,
+  "Other": null,
+};
+
 const schema = z.object({
   platform: z.enum(PLATFORMS),
   proof_url: z.string().trim().url("Must be a valid URL").max(500),
@@ -64,6 +73,18 @@ function VerificationPage() {
     if (!user) return;
     const parsed = schema.safeParse({ platform, proof_url: proofUrl, notes: notes || undefined });
     if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
+
+    // Client-side platform/host check (mirrors the DB trigger for nicer UX)
+    const expected = PLATFORM_HOSTS[parsed.data.platform];
+    if (expected) {
+      let host = "";
+      try { host = new URL(parsed.data.proof_url).hostname.replace(/^www\./i, ""); } catch { /* validated above */ }
+      if (!expected.test(host)) {
+        toast.error(`Proof URL must be on ${parsed.data.platform} (got ${host || "unknown host"})`);
+        return;
+      }
+    }
+
     setSubmitting(true);
     const { error } = await supabase.from("verification_requests").insert({
       profile_id: user.id,
@@ -73,7 +94,13 @@ function VerificationPage() {
       status: "pending",
     });
     setSubmitting(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) {
+      const msg = error.code === "23505"
+        ? `You already have a pending request for ${parsed.data.platform}. Cancel it before submitting another.`
+        : error.message;
+      toast.error(msg);
+      return;
+    }
     toast.success("Request submitted! We'll review within 48h.");
     setProofUrl(""); setNotes("");
     load();

@@ -9,7 +9,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
-  GripVertical, Plus, Trash2, ExternalLink, Link2, Heading, Mail, ChevronDown, Calendar, Github, MessageCircle,
+  GripVertical, Plus, Trash2, ExternalLink, Link2, Heading, ChevronDown, Calendar, Github, MessageCircle,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/admin/")({
   component: LinksEditor,
 });
 
-type LinkType = "link" | "header" | "email" | "github_stats" | "discord_stats";
+type LinkType = "link" | "header" | "github_stats" | "discord_stats";
 
 interface LinkRow {
   id: string;
@@ -61,7 +61,7 @@ interface ProfileRow {
 const BLOCK_TYPES: { id: LinkType; name: string; icon: typeof Link2; defaults: Partial<LinkRow> }[] = [
   { id: "link", name: "Link", icon: Link2, defaults: { title: "New link", url: "https://" } },
   { id: "header", name: "Section header", icon: Heading, defaults: { title: "Section title", url: "" } },
-  { id: "email", name: "Email collector", icon: Mail, defaults: { title: "Join my newsletter", url: "" } },
+  
   { id: "github_stats", name: "GitHub live stats", icon: Github, defaults: { title: "Follow me on GitHub", url: "https://github.com/yourname" } },
   { id: "discord_stats", name: "Discord live stats", icon: MessageCircle, defaults: { title: "Join the Discord", url: "https://discord.gg/yourcode" } },
 ];
