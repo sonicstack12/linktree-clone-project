@@ -9,7 +9,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
-  GripVertical, Plus, Trash2, ExternalLink, Link2, Heading, Mail, ChevronDown, Calendar, Github, MessageCircle,
+  GripVertical, Plus, Trash2, ExternalLink, Link2, Heading, ChevronDown, Calendar, Github, MessageCircle,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
