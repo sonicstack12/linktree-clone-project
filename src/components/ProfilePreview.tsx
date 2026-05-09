@@ -308,20 +308,6 @@ function ClassicBlock(props: BlockProps) {
       </div>
     );
   }
-  if (link.type === "email") {
-    return (
-      <div ref={revealRef} className={`reveal-on-scroll ${animationClass(anim)}`} style={animStyle}>
-        <EmailCollector
-          link={link}
-          profileId={profile.id}
-          buttonClass={buttonStyle.className}
-          buttonStyleId={buttonStyle.id}
-          theme={theme}
-          effect={effect}
-        />
-      </div>
-    );
-  }
   if (link.type === "github_stats" || link.type === "discord_stats") {
     return (
       <div ref={revealRef} className={`reveal-on-scroll ${animationClass(anim)}`} style={animStyle}>
@@ -405,21 +391,6 @@ function BentoBlock(props: BlockProps) {
       </div>
     );
   }
-  if (link.type === "email") {
-    return (
-      <div ref={revealRef} className={`reveal-on-scroll bento-2x1 ${animationClass(anim)}`} style={animStyle}>
-        <EmailCollector
-          link={link}
-          profileId={profile.id}
-          buttonClass={buttonStyle.className}
-          buttonStyleId={buttonStyle.id}
-          theme={theme}
-          effect={effect}
-        />
-      </div>
-    );
-  }
-
   const embed = detectEmbed(link.url);
   if (embed) {
     return (
@@ -464,80 +435,3 @@ function BentoBlock(props: BlockProps) {
   );
 }
 
-function EmailCollector({
-  link,
-  profileId,
-  buttonClass,
-  buttonStyleId,
-  theme,
-  effect,
-}: {
-  link: LinkData;
-  profileId: string;
-  buttonClass: string;
-  buttonStyleId: string;
-  theme: { button: string; buttonText: string; text: string; accent: string };
-  effect: ButtonEffectId;
-}) {
-  const [email, setEmail] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [done, setDone] = useState(false);
-
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
-      toast.error("Enter a valid email");
-      return;
-    }
-    setSubmitting(true);
-    const { error } = await supabase.from("email_subscribers").insert({
-      profile_id: profileId,
-      email: email.toLowerCase(),
-      source_link_id: link.id,
-    });
-    setSubmitting(false);
-    if (error && !error.message.includes("duplicate")) {
-      toast.error(error.message);
-      return;
-    }
-    setDone(true);
-  };
-
-  if (done) {
-    return (
-      <div className={`w-full px-5 py-3 text-sm font-semibold ${buttonClass}`} style={{ background: theme.button, color: theme.buttonText }}>
-        Thanks for subscribing! 🎉
-      </div>
-    );
-  }
-
-  return (
-    <form onSubmit={submit} className="flex w-full flex-col gap-2">
-      {link.title && <div className="text-xs font-semibold opacity-80">{link.title}</div>}
-      <div className="flex w-full gap-2">
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="your@email.com"
-          className={`flex-1 px-3 py-3 text-sm outline-none ring-2 ring-transparent focus:ring-current ${buttonClass}`}
-          style={{ background: "rgba(255,255,255,0.7)", color: "oklch(0.20 0.02 240)" }}
-        />
-        <button
-          type="submit"
-          disabled={submitting}
-          className={`px-4 py-3 text-sm font-semibold transition-transform duration-200 hover:scale-[1.02] ${buttonClass}`}
-          style={{
-            background: buttonStyleId === "outline" ? "transparent" : theme.button,
-            color: buttonStyleId === "outline" ? theme.text : theme.buttonText,
-            borderColor: buttonStyleId === "outline" ? theme.button : undefined,
-            ...buttonEffectStyle(effect, theme.accent),
-          }}
-        >
-          {submitting ? "..." : "Join"}
-        </button>
-      </div>
-    </form>
-  );
-}
