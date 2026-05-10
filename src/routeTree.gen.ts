@@ -20,9 +20,11 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as AdminVerificationRouteImport } from './routes/admin.verification'
 import { Route as AdminReviewRouteImport } from './routes/admin.review'
+import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminPreviewRouteImport } from './routes/admin.preview'
 import { Route as AdminAppearanceRouteImport } from './routes/admin.appearance'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
+import { Route as PUsernameSlugRouteImport } from './routes/p.$username.$slug'
 import { Route as OgUUsernameRouteImport } from './routes/og.u.$username'
 
 const TemplatesRoute = TemplatesRouteImport.update({
@@ -80,6 +82,11 @@ const AdminReviewRoute = AdminReviewRouteImport.update({
   path: '/review',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminProductsRoute = AdminProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPreviewRoute = AdminPreviewRouteImport.update({
   id: '/preview',
   path: '/preview',
@@ -94,6 +101,11 @@ const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
   getParentRoute: () => AdminRoute,
+} as any)
+const PUsernameSlugRoute = PUsernameSlugRouteImport.update({
+  id: '/p/$username/$slug',
+  path: '/p/$username/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const OgUUsernameRoute = OgUUsernameRouteImport.update({
   id: '/og/u/$username',
@@ -112,11 +124,13 @@ export interface FileRoutesByFullPath {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/appearance': typeof AdminAppearanceRoute
   '/admin/preview': typeof AdminPreviewRoute
+  '/admin/products': typeof AdminProductsRoute
   '/admin/review': typeof AdminReviewRoute
   '/admin/verification': typeof AdminVerificationRoute
   '/u/$username': typeof UUsernameRoute
   '/admin/': typeof AdminIndexRoute
   '/og/u/$username': typeof OgUUsernameRoute
+  '/p/$username/$slug': typeof PUsernameSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -128,11 +142,13 @@ export interface FileRoutesByTo {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/appearance': typeof AdminAppearanceRoute
   '/admin/preview': typeof AdminPreviewRoute
+  '/admin/products': typeof AdminProductsRoute
   '/admin/review': typeof AdminReviewRoute
   '/admin/verification': typeof AdminVerificationRoute
   '/u/$username': typeof UUsernameRoute
   '/admin': typeof AdminIndexRoute
   '/og/u/$username': typeof OgUUsernameRoute
+  '/p/$username/$slug': typeof PUsernameSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -146,11 +162,13 @@ export interface FileRoutesById {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/appearance': typeof AdminAppearanceRoute
   '/admin/preview': typeof AdminPreviewRoute
+  '/admin/products': typeof AdminProductsRoute
   '/admin/review': typeof AdminReviewRoute
   '/admin/verification': typeof AdminVerificationRoute
   '/u/$username': typeof UUsernameRoute
   '/admin/': typeof AdminIndexRoute
   '/og/u/$username': typeof OgUUsernameRoute
+  '/p/$username/$slug': typeof PUsernameSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -165,11 +183,13 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/appearance'
     | '/admin/preview'
+    | '/admin/products'
     | '/admin/review'
     | '/admin/verification'
     | '/u/$username'
     | '/admin/'
     | '/og/u/$username'
+    | '/p/$username/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -181,11 +201,13 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/appearance'
     | '/admin/preview'
+    | '/admin/products'
     | '/admin/review'
     | '/admin/verification'
     | '/u/$username'
     | '/admin'
     | '/og/u/$username'
+    | '/p/$username/$slug'
   id:
     | '__root__'
     | '/'
@@ -198,11 +220,13 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/appearance'
     | '/admin/preview'
+    | '/admin/products'
     | '/admin/review'
     | '/admin/verification'
     | '/u/$username'
     | '/admin/'
     | '/og/u/$username'
+    | '/p/$username/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -215,6 +239,7 @@ export interface RootRouteChildren {
   TemplatesRoute: typeof TemplatesRoute
   UUsernameRoute: typeof UUsernameRoute
   OgUUsernameRoute: typeof OgUUsernameRoute
+  PUsernameSlugRoute: typeof PUsernameSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -296,6 +321,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminReviewRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/products': {
+      id: '/admin/products'
+      path: '/products'
+      fullPath: '/admin/products'
+      preLoaderRoute: typeof AdminProductsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/preview': {
       id: '/admin/preview'
       path: '/preview'
@@ -317,6 +349,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAnalyticsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/p/$username/$slug': {
+      id: '/p/$username/$slug'
+      path: '/p/$username/$slug'
+      fullPath: '/p/$username/$slug'
+      preLoaderRoute: typeof PUsernameSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/og/u/$username': {
       id: '/og/u/$username'
       path: '/og/u/$username'
@@ -331,6 +370,7 @@ interface AdminRouteChildren {
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminAppearanceRoute: typeof AdminAppearanceRoute
   AdminPreviewRoute: typeof AdminPreviewRoute
+  AdminProductsRoute: typeof AdminProductsRoute
   AdminReviewRoute: typeof AdminReviewRoute
   AdminVerificationRoute: typeof AdminVerificationRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -340,6 +380,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminAppearanceRoute: AdminAppearanceRoute,
   AdminPreviewRoute: AdminPreviewRoute,
+  AdminProductsRoute: AdminProductsRoute,
   AdminReviewRoute: AdminReviewRoute,
   AdminVerificationRoute: AdminVerificationRoute,
   AdminIndexRoute: AdminIndexRoute,
@@ -357,6 +398,7 @@ const rootRouteChildren: RootRouteChildren = {
   TemplatesRoute: TemplatesRoute,
   UUsernameRoute: UUsernameRoute,
   OgUUsernameRoute: OgUUsernameRoute,
+  PUsernameSlugRoute: PUsernameSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

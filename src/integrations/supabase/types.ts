@@ -150,6 +150,57 @@ export type Database = {
           },
         ]
       }
+      products: {
+        Row: {
+          cover_image: string | null
+          created_at: string
+          cta_label: string | null
+          cta_url: string | null
+          description: string | null
+          gallery: Json
+          id: string
+          price: string | null
+          profile_id: string
+          published: boolean
+          slug: string
+          tagline: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cover_image?: string | null
+          created_at?: string
+          cta_label?: string | null
+          cta_url?: string | null
+          description?: string | null
+          gallery?: Json
+          id?: string
+          price?: string | null
+          profile_id: string
+          published?: boolean
+          slug: string
+          tagline?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cover_image?: string | null
+          created_at?: string
+          cta_label?: string | null
+          cta_url?: string | null
+          description?: string | null
+          gallery?: Json
+          id?: string
+          price?: string | null
+          profile_id?: string
+          published?: boolean
+          slug?: string
+          tagline?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           animation_style: string
@@ -169,6 +220,7 @@ export type Database = {
           glass_effect: boolean
           id: string
           layout: string
+          onboarded_at: string | null
           privacy_mode: boolean
           text_color: string | null
           theme: string
@@ -196,6 +248,7 @@ export type Database = {
           glass_effect?: boolean
           id: string
           layout?: string
+          onboarded_at?: string | null
           privacy_mode?: boolean
           text_color?: string | null
           theme?: string
@@ -223,6 +276,7 @@ export type Database = {
           glass_effect?: boolean
           id?: string
           layout?: string
+          onboarded_at?: string | null
           privacy_mode?: boolean
           text_color?: string | null
           theme?: string

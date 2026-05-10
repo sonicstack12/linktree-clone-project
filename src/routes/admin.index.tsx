@@ -176,7 +176,7 @@ function LinksEditor() {
         {/* Add block dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="hero" size="lg" className="w-full">
+            <Button variant="hero" size="lg" className="w-full" data-tour="add-block">
               <Plus className="h-5 w-5" /> Add block
             </Button>
           </DropdownMenuTrigger>
