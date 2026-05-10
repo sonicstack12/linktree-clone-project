@@ -4,7 +4,7 @@ import { Logo } from "@/components/Logo";
 import { OnboardingTour } from "@/components/OnboardingTour";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { LayoutDashboard, Palette, BarChart3, Eye, LogOut, BadgeCheck, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, Palette, BarChart3, Eye, LogOut, BadgeCheck, ShieldCheck, Package } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 
@@ -13,11 +13,11 @@ export const Route = createFileRoute("/admin")({
 });
 
 const NAV = [
-  { to: "/admin", label: "Links", icon: LayoutDashboard, exact: true },
-  { to: "/admin/appearance", label: "Appearance", icon: Palette, exact: false },
-  
-  { to: "/admin/analytics", label: "Analytics", icon: BarChart3, exact: false },
-  { to: "/admin/verification", label: "Verification", icon: BadgeCheck, exact: false },
+  { to: "/admin", label: "Links", icon: LayoutDashboard, exact: true, tour: "links-nav" },
+  { to: "/admin/appearance", label: "Appearance", icon: Palette, exact: false, tour: "appearance-nav" },
+  { to: "/admin/products", label: "Products", icon: Package, exact: false, tour: "products-nav" },
+  { to: "/admin/analytics", label: "Analytics", icon: BarChart3, exact: false, tour: "analytics-nav" },
+  { to: "/admin/verification", label: "Verification", icon: BadgeCheck, exact: false, tour: "verification-nav" },
 ];
 
 function AdminLayout() {
@@ -40,7 +40,7 @@ function AdminLayout() {
     return <div className="grid min-h-screen place-items-center text-muted-foreground">Loading…</div>;
   }
 
-  const nav = isAdmin ? [...NAV, { to: "/admin/review", label: "Review queue", icon: ShieldCheck, exact: false }] : NAV;
+  const nav = isAdmin ? [...NAV, { to: "/admin/review", label: "Review queue", icon: ShieldCheck, exact: false, tour: "review-nav" }] : NAV;
 
   return (
     <div className="min-h-screen bg-background">
@@ -49,7 +49,7 @@ function AdminLayout() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
           <Logo />
           <div className="flex items-center gap-2">
-            <Button asChild variant="outline" size="sm">
+            <Button asChild variant="outline" size="sm" data-tour="preview-btn">
               <a href={`/u/preview`} onClick={(e) => { e.preventDefault(); navigate({ to: "/admin/preview" }); }}>
                 <Eye className="h-4 w-4" /> Preview
               </a>
@@ -70,6 +70,7 @@ function AdminLayout() {
               <Link
                 key={item.to}
                 to={item.to}
+                data-tour={item.tour}
                 className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-pop ${
                   isActive
                     ? "bg-foreground text-background shadow-pop"
