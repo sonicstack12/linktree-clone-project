@@ -35,7 +35,9 @@ export const Route = createFileRoute("/p/$username/$slug")({
   ),
   errorComponent: ({ error }) => (
     <div className="grid min-h-screen place-items-center px-4 text-center">
-      <p className="text-sm text-muted-foreground">Something went wrong: {error.message}</p>
+      <p className="text-sm text-muted-foreground">
+        Something went wrong: {error instanceof Error ? error.message : "An unexpected error occurred."}
+      </p>
     </div>
   ),
   head: ({ loaderData }) => {

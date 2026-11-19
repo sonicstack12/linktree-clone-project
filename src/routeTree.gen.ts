@@ -9,47 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TemplatesRouteImport } from './routes/templates'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as DiscoverRouteImport } from './routes/discover'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as TemplatesRouteImport } from './routes/templates'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as UUsernameRouteImport } from './routes/u.$username'
-import { Route as AdminVerificationRouteImport } from './routes/admin.verification'
-import { Route as AdminReviewRouteImport } from './routes/admin.review'
-import { Route as AdminProductsRouteImport } from './routes/admin.products'
-import { Route as AdminPreviewRouteImport } from './routes/admin.preview'
-import { Route as AdminAppearanceRouteImport } from './routes/admin.appearance'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
-import { Route as PUsernameSlugRouteImport } from './routes/p.$username.$slug'
+import { Route as AdminAppearanceRouteImport } from './routes/admin.appearance'
+import { Route as AdminPreviewRouteImport } from './routes/admin.preview'
+import { Route as AdminProductsRouteImport } from './routes/admin.products'
+import { Route as AdminReviewRouteImport } from './routes/admin.review'
+import { Route as AdminVerificationRouteImport } from './routes/admin.verification'
+import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as OgUUsernameRouteImport } from './routes/og.u.$username'
+import { Route as PUsernameSlugRouteImport } from './routes/p.$username.$slug'
 
-const TemplatesRoute = TemplatesRouteImport.update({
-  id: '/templates',
-  path: '/templates',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PricingRoute = PricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DiscoverRoute = DiscoverRouteImport.update({
-  id: '/discover',
-  path: '/discover',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -57,9 +37,29 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TemplatesRoute = TemplatesRouteImport.update({
+  id: '/templates',
+  path: '/templates',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -67,29 +67,9 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const UUsernameRoute = UUsernameRouteImport.update({
-  id: '/u/$username',
-  path: '/u/$username',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminVerificationRoute = AdminVerificationRouteImport.update({
-  id: '/verification',
-  path: '/verification',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminReviewRoute = AdminReviewRouteImport.update({
-  id: '/review',
-  path: '/review',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminProductsRoute = AdminProductsRouteImport.update({
-  id: '/products',
-  path: '/products',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPreviewRoute = AdminPreviewRouteImport.update({
-  id: '/preview',
-  path: '/preview',
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminAppearanceRoute = AdminAppearanceRouteImport.update({
@@ -97,19 +77,39 @@ const AdminAppearanceRoute = AdminAppearanceRouteImport.update({
   path: '/appearance',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
-  id: '/analytics',
-  path: '/analytics',
+const AdminPreviewRoute = AdminPreviewRouteImport.update({
+  id: '/preview',
+  path: '/preview',
   getParentRoute: () => AdminRoute,
 } as any)
-const PUsernameSlugRoute = PUsernameSlugRouteImport.update({
-  id: '/p/$username/$slug',
-  path: '/p/$username/$slug',
+const AdminProductsRoute = AdminProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReviewRoute = AdminReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminVerificationRoute = AdminVerificationRouteImport.update({
+  id: '/verification',
+  path: '/verification',
+  getParentRoute: () => AdminRoute,
+} as any)
+const UUsernameRoute = UUsernameRouteImport.update({
+  id: '/u/$username',
+  path: '/u/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OgUUsernameRoute = OgUUsernameRouteImport.update({
   id: '/og/u/$username',
   path: '/og/u/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PUsernameSlugRoute = PUsernameSlugRouteImport.update({
+  id: '/p/$username/$slug',
+  path: '/p/$username/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -244,39 +244,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/templates': {
-      id: '/templates'
-      path: '/templates'
-      fullPath: '/templates'
-      preLoaderRoute: typeof TemplatesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pricing': {
-      id: '/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/discover': {
-      id: '/discover'
-      path: '/discover'
-      fullPath: '/discover'
-      preLoaderRoute: typeof DiscoverRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -286,11 +258,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/discover': {
+      id: '/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof DiscoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/templates': {
+      id: '/templates'
+      path: '/templates'
+      fullPath: '/templates'
+      preLoaderRoute: typeof TemplatesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -300,39 +300,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/u/$username': {
-      id: '/u/$username'
-      path: '/u/$username'
-      fullPath: '/u/$username'
-      preLoaderRoute: typeof UUsernameRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/verification': {
-      id: '/admin/verification'
-      path: '/verification'
-      fullPath: '/admin/verification'
-      preLoaderRoute: typeof AdminVerificationRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/review': {
-      id: '/admin/review'
-      path: '/review'
-      fullPath: '/admin/review'
-      preLoaderRoute: typeof AdminReviewRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/products': {
-      id: '/admin/products'
-      path: '/products'
-      fullPath: '/admin/products'
-      preLoaderRoute: typeof AdminProductsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/preview': {
-      id: '/admin/preview'
-      path: '/preview'
-      fullPath: '/admin/preview'
-      preLoaderRoute: typeof AdminPreviewRouteImport
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/appearance': {
@@ -342,18 +314,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAppearanceRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/analytics': {
-      id: '/admin/analytics'
-      path: '/analytics'
-      fullPath: '/admin/analytics'
-      preLoaderRoute: typeof AdminAnalyticsRouteImport
+    '/admin/preview': {
+      id: '/admin/preview'
+      path: '/preview'
+      fullPath: '/admin/preview'
+      preLoaderRoute: typeof AdminPreviewRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/p/$username/$slug': {
-      id: '/p/$username/$slug'
-      path: '/p/$username/$slug'
-      fullPath: '/p/$username/$slug'
-      preLoaderRoute: typeof PUsernameSlugRouteImport
+    '/admin/products': {
+      id: '/admin/products'
+      path: '/products'
+      fullPath: '/admin/products'
+      preLoaderRoute: typeof AdminProductsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/review': {
+      id: '/admin/review'
+      path: '/review'
+      fullPath: '/admin/review'
+      preLoaderRoute: typeof AdminReviewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/verification': {
+      id: '/admin/verification'
+      path: '/verification'
+      fullPath: '/admin/verification'
+      preLoaderRoute: typeof AdminVerificationRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/u/$username': {
+      id: '/u/$username'
+      path: '/u/$username'
+      fullPath: '/u/$username'
+      preLoaderRoute: typeof UUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/og/u/$username': {
@@ -361,6 +354,13 @@ declare module '@tanstack/react-router' {
       path: '/og/u/$username'
       fullPath: '/og/u/$username'
       preLoaderRoute: typeof OgUUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/p/$username/$slug': {
+      id: '/p/$username/$slug'
+      path: '/p/$username/$slug'
+      fullPath: '/p/$username/$slug'
+      preLoaderRoute: typeof PUsernameSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -403,3 +403,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
